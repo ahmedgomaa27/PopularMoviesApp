@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         gridView = (GridView) findViewById(R.id.moviesgridview);
 
         if (savedInstanceState == null) {
-            SQLite.initialize(getApplicationContext());
-
             startApp(sortedBY);
         } else {
             sortedBY = savedInstanceState.getString(CURRENT_SORT);

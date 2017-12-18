@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesProvider;
 import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesTable;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +26,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 
 import ru.arturvasilov.sqlite.core.SQLite;
+import ru.arturvasilov.sqlite.core.SQLiteContentProvider;
 
 /**
  * Created by ahmed hamdy on 10/9/2017.
@@ -172,6 +174,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (moviename.equals(NOT_ADDED))
 
         {
+
             SQLite.get().insert(FavMoviesTable.TABLE, movie);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(movie.title, ALREADY_ADDED);
