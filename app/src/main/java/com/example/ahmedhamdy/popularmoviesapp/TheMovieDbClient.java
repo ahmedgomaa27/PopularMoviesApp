@@ -39,6 +39,8 @@ public class TheMovieDbClient {
     private final static String BASE_VIDEOS_URL2 = "/videos?";
     private final static String BASE_YOUTUBE_URL ="https://www.youtube.com/watch?v=";
     private final static String BASE_REVIEWS_URL = "/reviews?";
+    public final static String POSTER_BASE_URL ="http://image.tmdb.org/t/p/w185/";
+
 
     private static ArrayList linksfinal = new ArrayList();
     private static  ArrayList reviewsarray = new ArrayList();
@@ -84,7 +86,7 @@ public class TheMovieDbClient {
             try {
                 items = response.getJSONArray("results");
                 // parse json array  into array of model objects
-                ArrayList<MoviesDb> movies = MoviesDb.fromJson(items);
+                ArrayList<MoviesDb> movies = fromJson(items);
                 for(MoviesDb movie :movies){
                     movieadapter.add(movie);
                 }
@@ -108,6 +110,47 @@ public class TheMovieDbClient {
 
 
 }
+/////////////////////////////////
+
+    public static MoviesDb fromJson(JSONObject jsonObject){
+        MoviesDb b = new MoviesDb();
+        try {
+            b.title = jsonObject.getString("title");
+            b.overview = jsonObject.getString("overview");
+            b.posterPath = POSTER_BASE_URL + jsonObject.getString("poster_path");
+            b.realeseDate = jsonObject.getString("release_date");
+            b.voteAverage = jsonObject.getInt("vote_average");
+            b.movieId = jsonObject.getInt("id");
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return b;
+    }
+
+    //Decodes array of box office movie json results into movie model objects
+    public static ArrayList<MoviesDb> fromJson(JSONArray jsonArray){
+
+        ArrayList<MoviesDb> movies = new ArrayList<MoviesDb>(jsonArray.length());
+        // get every movie Jsonobject to convert to movie data model
+        for (int i=0; i< jsonArray.length();i++){
+            JSONObject movieJson = null;
+            try {
+                movieJson = jsonArray.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            MoviesDb movie = TheMovieDbClient.fromJson(movieJson);
+            if(movie!=null){
+                movies.add(movie);
+            }
+        }
+
+        return movies;
+    }
+    //////////////////////////
 ////// for trialers ///////////////
 public static String getVideosRequestUrl(int id){
 

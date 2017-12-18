@@ -1,9 +1,11 @@
 package com.example.ahmedhamdy.popularmoviesapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +18,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ahmedhamdy.popularmoviesapp.database.FavoriteMovies;
-import com.example.ahmedhamdy.popularmoviesapp.database.FavoritemoviesTable;
+import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesTable;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+
+import ru.arturvasilov.sqlite.core.SQLite;
 
 /**
  * Created by ahmed hamdy on 10/9/2017.
@@ -38,6 +41,9 @@ public class MovieDetailsActivity extends AppCompatActivity{
     TextView releaseDate;
     private  static final String MOVIE_KEY = "movie";
     private static final String MOVIE_FAV_SELECTED = "favorite";
+    private static final String NOT_ADDED = "not added";
+    private static final String ALREADY_ADDED = "already added";
+
     ArrayList links = TheMovieDbClient.getLinksfinal();
     ListView trialerslist ;
     ArrayAdapter listadapter;
@@ -46,6 +52,8 @@ public class MovieDetailsActivity extends AppCompatActivity{
     ArrayList<String> reviews = new ArrayList<>();
     Button favouritebutton;
     TextView trialertitle,reviewstitle;
+    SharedPreferences preferences;
+
 
 
     @Override
@@ -64,9 +72,12 @@ public class MovieDetailsActivity extends AppCompatActivity{
         trialertitle = (TextView) findViewById(R.id.trailersTextview);
         reviewstitle = (TextView) findViewById(R.id.reviewstextview);
 
+         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
 
         boolean isFavSelected = getIntent().getBooleanExtra(MOVIE_FAV_SELECTED,false);
         setMovieDetails(isFavSelected);
+
 
 
 
@@ -105,19 +116,7 @@ public class MovieDetailsActivity extends AppCompatActivity{
 
     }
     else {
-            FavoriteMovies favoriteMovies = Parcels.unwrap(getIntent().getParcelableExtra(MOVIE_KEY));
-            titleview.setText(favoriteMovies.title);
-            Picasso.with(getApplicationContext()).load(favoriteMovies.posterPath).into(movieImage);
-            movie_overview.setText(favoriteMovies.overview);
-            voteAverage.setText(String.valueOf(favoriteMovies.voteAverage)+"/10");
-            releaseDate.setText(favoriteMovies.realeseDate);
-            trialerslist.setVisibility(View.GONE);
-            reviewslist.setVisibility(View.GONE);
-            favouritebutton.setVisibility(View.GONE);
-            reviewstitle.setVisibility(View.GONE);
-            trialertitle.setVisibility(View.GONE);
-
-
+            //TODO : get movide form favorite movies
         }
 
 
@@ -187,20 +186,23 @@ public class MovieDetailsActivity extends AppCompatActivity{
 
     public void addToDataBase(MoviesDb movie){
 
-       FavoriteMovies favoriteMovies = new FavoriteMovies();
-        favoriteMovies.title = movie.getTitle();
-        favoriteMovies.overview = movie.getOverview();
-        favoriteMovies.posterPath = movie.getPosterPath();
-        favoriteMovies.realeseDate = movie.getRealeseDate();
-        favoriteMovies.voteAverage = movie.getVoteAverage();
 
+        String moviename  = preferences.getString(movie.title,NOT_ADDED);
+        if (moviename.equals(NOT_ADDED))
 
+        {
+            SQLite.get().insert(FavMoviesTable.TABLE, movie);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(movie.title,ALREADY_ADDED);
+            editor.apply();
 
-        getContentResolver().insert(FavoritemoviesTable.CONTENT_URI,FavoritemoviesTable.getContentValues(
-                favoriteMovies,true
-        ));
+            Toast.makeText(getApplicationContext(), "Added To Favorite List", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getApplicationContext(),"Added To Favorite List",Toast.LENGTH_LONG).show();
+        }
+        else if (moviename.equals(ALREADY_ADDED)){
+            Toast.makeText(getApplicationContext(), "Movie is already in Favorite List", Toast.LENGTH_SHORT).show();
+        }
+
 
 
                /* Cursor cursor = getContentResolver().query(FavoritemoviesTable.CONTENT_URI,

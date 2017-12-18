@@ -3,15 +3,16 @@ package com.example.ahmedhamdy.popularmoviesapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -19,13 +20,14 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.ahmedhamdy.popularmoviesapp.database.FavoriteMovies;
-import com.example.ahmedhamdy.popularmoviesapp.database.FavoritemoviesTable;
+import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesTable;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ru.arturvasilov.sqlite.core.SQLite;
 
 public class MainActivity extends AppCompatActivity {
     private GridView gridView;
@@ -33,32 +35,52 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<MoviesDb> movies = new ArrayList<>();
     private Button refreshbutton;
     private  static final String MOVIE_KEY = "movie";
-    private static final String MOVIE_FAV_SELECTED = "favorite";
+    private static final String CURRENT_SELECTION = "index";
+    private static final String CURRENT_SORT = "sort";
+    private String sortedBY = "top";
+    int index=1;
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CURRENT_SORT,sortedBY);
+       index = gridView.getFirstVisiblePosition();
+        outState.putInt(CURRENT_SELECTION,index);
+
+    }
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        if(!isNetworkAvailable()){
-            setContentView(R.layout.offline_layout);
-            refreshbutton = (Button) findViewById(R.id.refreshbutton);
-            refreshbutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   if (isNetworkAvailable())
-                       startApp("top");
-                   else {
+        gridView = (GridView) findViewById(R.id.moviesgridview);
 
-                   }
-                }
-            });
+        if (savedInstanceState == null)
+        {
+            SQLite.initialize(getApplicationContext());
+
+            startApp(sortedBY);
         }
-        else{
-            startApp("top");
+        else {
+            sortedBY = savedInstanceState.getString(CURRENT_SORT);
+            index = savedInstanceState.getInt(CURRENT_SELECTION);
+           // Toast.makeText(getApplicationContext(),String.valueOf(index),Toast.LENGTH_SHORT).show();
+            if (sortedBY.equals("fav"))
+            { startFavorites();
+             }
+            else {
+                initStart(sortedBY);
+
+            }
+
         }
+
+
+
 
 
     }
@@ -77,12 +99,17 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_popular:
                 startApp("popular");
+                sortedBY = "popular";
+                Toast.makeText(getApplicationContext(),sortedBY,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_toprated:
                 startApp("top");
+                sortedBY = "top";
+                Toast.makeText(getApplicationContext(),sortedBY,Toast.LENGTH_SHORT).show();
                 break;
             case R.id.favorites:
                 startFavorites();
+                sortedBY = "fav";
 
 
 
@@ -93,23 +120,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void startApp(String sortby){
 
-        setContentView(R.layout.activity_main);
 
-        gridView = (GridView) findViewById(R.id.moviesgridview);
+
         moviesAdapter = new MoviesAdapter(this,movies);
         moviesAdapter.clear();
         final RequestQueue queue = Volley.newRequestQueue(this);
 
         TheMovieDbClient.getJsonString(queue,this,moviesAdapter,sortby);
         gridView.setAdapter(moviesAdapter);
+        if (index != 1) {
+
+           gridView.setSelection(index);
+        }
+
+
+
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 MoviesDb movie = moviesAdapter.getItem(position);
-                String trialersrequest = TheMovieDbClient.getVideosRequestUrl(movie.getID());
+                String trialersrequest = TheMovieDbClient.getVideosRequestUrl(movie.getMovieId());
 
-              String reviewsurl =  TheMovieDbClient.reviewsUrl(movie.getID());
+              String reviewsurl =  TheMovieDbClient.reviewsUrl(movie.getMovieId());
 
               TheMovieDbClient.getReviewsResponse(getApplicationContext(),queue,reviewsurl);
 
@@ -127,38 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
    public void startFavorites() {
 
-        Cursor cursor = getContentResolver().query(FavoritemoviesTable.CONTENT_URI,
-                null, null, null, null);
-        final List<FavoriteMovies> favouriteList = FavoritemoviesTable.getRows(cursor, false);
+
+        movies.clear();
+        movies.addAll(SQLite.get().query(FavMoviesTable.TABLE));
+
+        moviesAdapter = new MoviesAdapter(this,movies);
+        gridView.setAdapter(moviesAdapter);
+        gridView.setSelection(index);
 
 
-        if (!favouriteList.isEmpty()) {
 
 
-            setContentView(R.layout.activity_main);
-
-            gridView = (GridView) findViewById(R.id.moviesgridview);
-            FavoriteMoviesAdapter favoriteMoviesAdapter = new FavoriteMoviesAdapter(getApplicationContext(),
-                    favouriteList);
-            gridView.setAdapter(favoriteMoviesAdapter);
-
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    FavoriteMovies favoriteMovies = favouriteList.get(position);
-                    Intent intent = new Intent(getApplicationContext(),MovieDetailsActivity.class);
-                    intent.putExtra(MOVIE_KEY,Parcels.wrap(favoriteMovies));
-                    intent.putExtra(MOVIE_FAV_SELECTED,true);
-
-                    startActivity(intent);
-
-                }
-            });
-
-            }
-            else
-                Toast.makeText(getApplicationContext(),"Empty favorite list",Toast.LENGTH_SHORT).show();
-    }
+   }
 
 
 
@@ -170,5 +184,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void initStart(final String sort){
+        if(!isNetworkAvailable()){
+            setContentView(R.layout.offline_layout);
+            refreshbutton = (Button) findViewById(R.id.refreshbutton);
+            refreshbutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isNetworkAvailable()) {
+                        if (!TextUtils.isEmpty(sort))
+                            startApp(sort);
+                        else
+                            startApp(sort);
+                    }
+                    else {
+
+                    }
+                }
+            });
+        }
+        else{
+            if (!TextUtils.isEmpty(sort))
+                startApp(sort);
+            else
+                startApp("popular");
+        }
+
+    }
 
 }

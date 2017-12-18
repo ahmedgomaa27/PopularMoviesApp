@@ -21,10 +21,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieDetailsActivity"></activity>
+
         <provider
-            android:authorities="com.example.ahmedhamdy.popularmoviesapp.authority"
-            android:name="com.example.ahmedhamdy.popularmoviesapp.database.MoviesProvider"></provider>
+            android:authorities="com.myapp"
+            android:name=".database.FavMoviesProvider"
+            android:exported="false"></provider>
     </application>
+
 
 
 </manifest>
