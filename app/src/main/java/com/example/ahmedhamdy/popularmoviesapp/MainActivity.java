@@ -131,13 +131,13 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 MoviesDb movie = moviesAdapter.getItem(position);
-                String trialersrequest = TheMovieDbClient.getVideosRequestUrl(movie.getMovieId());
+                String trialersRequest = TheMovieDbClient.getVideosRequestUrl(movie.getMovieId());
 
-                String reviewsurl = TheMovieDbClient.reviewsUrl(movie.getMovieId());
+                String reviewsUrl = TheMovieDbClient.reviewsUrl(movie.getMovieId());
 
-                TheMovieDbClient.getReviewsResponse(getApplicationContext(), queue, reviewsurl);
+                TheMovieDbClient.getReviewsResponse(getApplicationContext(), queue, reviewsUrl);
 
-                TheMovieDbClient.getTrailersKey(queue, getApplicationContext(), trialersrequest);
+                TheMovieDbClient.getTrailersKey(queue, getApplicationContext(), trialersRequest);
 
                 Intent i = new Intent(MainActivity.this, MovieDetailsActivity.class);
                 i.putExtra(MOVIE_KEY, Parcels.wrap(movie));
