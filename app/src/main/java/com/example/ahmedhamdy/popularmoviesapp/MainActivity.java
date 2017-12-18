@@ -110,13 +110,20 @@ public class MainActivity extends AppCompatActivity {
         moviesAdapter = new MoviesAdapter(this, movies);
         moviesAdapter.clear();
         final RequestQueue queue = Volley.newRequestQueue(this);
-
-        TheMovieDbClient.getJsonString(queue, this, moviesAdapter, sortby);
         gridView.setAdapter(moviesAdapter);
-        if (index != 1) {
 
-            gridView.setSelection(index);
-        }
+
+        TheMovieDbClient.getJsonString(queue, this, moviesAdapter, sortby, new TheMovieDbClient.movieListLoaded() {
+            @Override
+            public void movieListLoaded() {
+                if (index != 1) {
+
+                    gridView.setSelection(index);
+                    Toast.makeText(getApplicationContext(),String.valueOf(index),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

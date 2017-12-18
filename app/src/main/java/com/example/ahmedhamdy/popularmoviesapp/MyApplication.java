@@ -1,3 +1,5 @@
+package com.example.ahmedhamdy.popularmoviesapp;
+
 import android.app.Application;
 
 import ru.arturvasilov.sqlite.core.SQLite;
@@ -10,6 +12,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        SQLite.initialize(getApplicationContext());
+        SQLite.initialize(this);
     }
+
 }

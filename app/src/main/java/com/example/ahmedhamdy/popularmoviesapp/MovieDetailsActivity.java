@@ -174,7 +174,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (moviename.equals(NOT_ADDED))
 
         {
-
             SQLite.get().insert(FavMoviesTable.TABLE, movie);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(movie.title, ALREADY_ADDED);

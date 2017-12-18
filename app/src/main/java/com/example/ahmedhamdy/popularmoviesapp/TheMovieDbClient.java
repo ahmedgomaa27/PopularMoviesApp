@@ -41,6 +41,11 @@ public class TheMovieDbClient {
     // for reviews https://api.themoviedb.org/3/movie/{id}/reviews?api_key={api_key}
 
     // method for build the url
+
+    public interface movieListLoaded{
+        void movieListLoaded();
+    }
+
     public static String sortByTop() {
         String url = BASE_URL + SORT_BY_TOP_RATED + API_KEY;
         return url;
@@ -54,7 +59,8 @@ public class TheMovieDbClient {
     /*
      method to get movies json array
      */
-    public static void getJsonString(RequestQueue queue, Context context, final MoviesAdapter movieadapter, String sortBy) {
+    public static void getJsonString(RequestQueue queue, Context context, final MoviesAdapter movieadapter, String sortBy,
+                                   final   movieListLoaded listLoaded) {
         String url;
         if (sortBy == "popular") {
             url = sortByPopular();
@@ -82,6 +88,7 @@ public class TheMovieDbClient {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                listLoaded.movieListLoaded();
 
 
             }
