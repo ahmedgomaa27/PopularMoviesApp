@@ -3,18 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Location Found -->
-    <item android:id="@+id/action_toprated"
+    <item
+        android:id="@+id/action_toprated"
         android:title="Top Rated"
         app:showAsAction="collapseActionView"
 
-         />
+        />
 
     <!-- Refresh -->
-    <item android:id="@+id/action_popular"
+    <item
+        android:id="@+id/action_popular"
         android:title="Popular"
-        app:showAsAction="collapseActionView"
-         />
-    <item android:id="@+id/favorites"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/favorites"
         android:title="Favorites"
         app:showAsAction="collapseActionView">
 

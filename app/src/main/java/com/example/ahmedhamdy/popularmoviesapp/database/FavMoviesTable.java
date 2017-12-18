@@ -28,7 +28,6 @@ public class FavMoviesTable extends BaseTable<MoviesDb> {
     public static final String MOVIEID = "movieId";
 
 
-
     @Override
     public void onCreate(@NonNull SQLiteDatabase database) {
         TableBuilder.create(this).intColumn(ID)
@@ -46,13 +45,13 @@ public class FavMoviesTable extends BaseTable<MoviesDb> {
     @Override
     public ContentValues toValues(@NonNull MoviesDb moviesDb) {
         ContentValues values = new ContentValues();
-        values.put(ID,moviesDb.getId());
-        values.put(TITLE,moviesDb.getTitle());
-        values.put(VOTEAVERAGE,moviesDb.getVoteAverage());
-        values.put(POSTERPATH,moviesDb.getPosterPath());
-        values.put(OVERVIEW,moviesDb.getOverview());
-        values.put(REALESEDATE,moviesDb.getRealeseDate());
-        values.put(MOVIEID,moviesDb.getMovieId());
+        values.put(ID, moviesDb.getId());
+        values.put(TITLE, moviesDb.getTitle());
+        values.put(VOTEAVERAGE, moviesDb.getVoteAverage());
+        values.put(POSTERPATH, moviesDb.getPosterPath());
+        values.put(OVERVIEW, moviesDb.getOverview());
+        values.put(REALESEDATE, moviesDb.getRealeseDate());
+        values.put(MOVIEID, moviesDb.getMovieId());
         return values;
     }
 
@@ -60,15 +59,15 @@ public class FavMoviesTable extends BaseTable<MoviesDb> {
     @Override
     public MoviesDb fromCursor(@NonNull Cursor cursor) {
 
-        MoviesDb movie  = new MoviesDb();
-         movie.id = cursor.getInt(cursor.getColumnIndex(ID));
-         movie.title = cursor.getString(cursor.getColumnIndex(TITLE));
-         movie.voteAverage = cursor.getInt(cursor.getColumnIndex(VOTEAVERAGE));
-         movie.posterPath = cursor.getString(cursor.getColumnIndex(POSTERPATH));
-         movie.overview = cursor.getString(cursor.getColumnIndex(OVERVIEW));
-         movie.realeseDate= cursor.getString(cursor.getColumnIndex(REALESEDATE));
-         movie.movieId = cursor.getInt(cursor.getColumnIndex(MOVIEID));
-         return movie ;
+        MoviesDb movie = new MoviesDb();
+        movie.id = cursor.getInt(cursor.getColumnIndex(ID));
+        movie.title = cursor.getString(cursor.getColumnIndex(TITLE));
+        movie.voteAverage = cursor.getInt(cursor.getColumnIndex(VOTEAVERAGE));
+        movie.posterPath = cursor.getString(cursor.getColumnIndex(POSTERPATH));
+        movie.overview = cursor.getString(cursor.getColumnIndex(OVERVIEW));
+        movie.realeseDate = cursor.getString(cursor.getColumnIndex(REALESEDATE));
+        movie.movieId = cursor.getInt(cursor.getColumnIndex(MOVIEID));
+        return movie;
 
     }
 }

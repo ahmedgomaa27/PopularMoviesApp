@@ -1,14 +1,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/greenlight">
-
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:background="@color/greenlight"
     android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,92 +24,91 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <TextView
-                android:id="@+id/movie_title_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textColor="@color/whiteoff"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/voteaverage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="15sp"
-                android:textColor="@color/whiteoff"/>
+                <TextView
+                    android:id="@+id/movie_title_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="@color/whiteoff"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/releasedate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="15sp"
-                android:textColor="@color/whiteoff"/>
+                <TextView
+                    android:id="@+id/voteaverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="@color/whiteoff"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/releasedate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="@color/whiteoff"
+                    android:textSize="15sp" />
 
                 <Button
+                    android:id="@+id/favouritebutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Add To Favourites"
-                    android:textSize="10sp"
-                    android:id="@+id/favouritebutton"
-                    android:textColor="@color/greenlight"/>
+                    android:textColor="@color/greenlight"
+                    android:textSize="10sp" />
 
 
             </LinearLayout>
 
 
-
-
         </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/movie_review"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textColor="@color/whiteoff"/>
-
+        <TextView
+            android:id="@+id/movie_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/whiteoff" />
 
 
         <TextView
+            android:id="@+id/trailersTextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Trialers:"
-            android:textSize="20sp"
             android:textColor="@color/whiteoff"
-            android:id="@+id/trailersTextview"/>
+            android:textSize="20sp" />
+
         <ListView
             android:id="@+id/trialerslistview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
         </ListView>
 
         <TextView
+            android:id="@+id/reviewstextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reviews"
-            android:textSize="20sp"
             android:textColor="@color/whiteoff"
-            android:id="@+id/reviewstextview"/>
-       <ScrollView
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content">
-        <ListView
-            android:id="@+id/reviewslist"
+            android:textSize="20sp" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
-        </ListView>
-       </ScrollView>
+            <ListView
+                android:id="@+id/reviewslist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-</LinearLayout>
+            </ListView>
+        </ScrollView>
+
+    </LinearLayout>
 
 
 </ScrollView>

@@ -2,7 +2,6 @@ package com.example.ahmedhamdy.popularmoviesapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,133 +30,26 @@ import ru.arturvasilov.sqlite.core.SQLite;
  * Created by ahmed hamdy on 10/9/2017.
  */
 
-public class MovieDetailsActivity extends AppCompatActivity{
+public class MovieDetailsActivity extends AppCompatActivity {
 
 
-    TextView titleview;
-    ImageView movieImage;
-    TextView movie_overview;
-    TextView voteAverage;
-    TextView releaseDate;
-    private  static final String MOVIE_KEY = "movie";
+    private static final String MOVIE_KEY = "movie";
     private static final String MOVIE_FAV_SELECTED = "favorite";
     private static final String NOT_ADDED = "not added";
     private static final String ALREADY_ADDED = "already added";
-
+    TextView titleview;
+    ImageView movieImage;
+    TextView movieOverview;
+    TextView voteAverage;
+    TextView releaseDate;
     ArrayList links = TheMovieDbClient.getLinksfinal();
-    ListView trialerslist ;
-    ArrayAdapter listadapter;
-    ListView reviewslist;
-    ArrayAdapter reviewsadapter;
+    ListView trialersList;
+    ArrayAdapter listAdapter;
+    ListView reviewsList;
+    ArrayAdapter reviewsAdapter;
     ArrayList<String> reviews = new ArrayList<>();
-    Button favouritebutton;
-    TextView trialertitle,reviewstitle;
+    Button favoriteButton;
     SharedPreferences preferences;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.movies_details);
-
-        titleview = (TextView) findViewById(R.id.movie_title_textview);
-        movieImage = (ImageView) findViewById(R.id.movie_image);
-        movie_overview = (TextView) findViewById(R.id.movie_review);
-        voteAverage = (TextView) findViewById(R.id.voteaverage);
-        releaseDate = (TextView) findViewById(R.id.releasedate);
-        trialerslist = (ListView) findViewById(R.id.trialerslistview);
-        reviewslist = (ListView) findViewById(R.id.reviewslist);
-        favouritebutton = (Button) findViewById(R.id.favouritebutton);
-        trialertitle = (TextView) findViewById(R.id.trailersTextview);
-        reviewstitle = (TextView) findViewById(R.id.reviewstextview);
-
-         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-
-        boolean isFavSelected = getIntent().getBooleanExtra(MOVIE_FAV_SELECTED,false);
-        setMovieDetails(isFavSelected);
-
-
-
-
-
-
-
-    }
-    public void setMovieDetails(boolean favselected) {
-        if (!favselected)
-        {
-            final MoviesDb movie = (MoviesDb) Parcels.unwrap(getIntent().getParcelableExtra(MOVIE_KEY));
-        titleview.setText(movie.getTitle());
-        Picasso.with(getApplicationContext()).load(movie.getPosterPath()).into(movieImage);
-        movie_overview.setText(movie.getOverview());
-        voteAverage.setText(String.valueOf(movie.getVoteAverage() + "/10"));
-        releaseDate.setText(movie.getRealeseDate());
-            trialerslist.setVisibility(View.VISIBLE);
-            reviewslist.setVisibility(View.VISIBLE);
-            favouritebutton.setVisibility(View.VISIBLE);
-            reviewstitle.setVisibility(View.VISIBLE);
-            trialertitle.setVisibility(View.VISIBLE);
-
-
-            setTrailer(trialerslist);
-        setReviews(reviewslist);
-
-
-        favouritebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                addToDataBase(movie);
-
-            }
-        });
-
-    }
-    else {
-            //TODO : get movide form favorite movies
-        }
-
-
-    }
-
-    private void setTrailer(ListView gridView){
-        ArrayList<String> words = new ArrayList<>(links.size());
-        for (int i =0;i<links.size();i++){
-            words.add("Trailer "+ String.valueOf(i+1));
-        }
-
-        listadapter = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,words);
-        gridView.setAdapter(listadapter);
-        setListViewHeightBasedOnChildren(gridView);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String url = links.get(position).toString();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-
-            }
-        });
-
-    }
-    private void setReviews(ListView reviewslist){
-
-        reviews.clear();
-         reviews = TheMovieDbClient.getReviewsarray();
-
-
-
-        reviewsadapter = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,
-               reviews );
-
-        reviewslist.setAdapter(reviewsadapter);
-        setListViewHeightBasedOnChildren(reviewslist);
-    }
 
     /**** Method for Setting the Height of the ListView dynamically.
      **** Hack to fix the issue of not showing all the items of the ListView
@@ -183,23 +75,111 @@ public class MovieDetailsActivity extends AppCompatActivity{
         listView.setLayoutParams(params);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.movies_details);
 
-    public void addToDataBase(MoviesDb movie){
+        titleview = (TextView) findViewById(R.id.movie_title_textview);
+        movieImage = (ImageView) findViewById(R.id.movie_image);
+        movieOverview = (TextView) findViewById(R.id.movie_review);
+        voteAverage = (TextView) findViewById(R.id.voteaverage);
+        releaseDate = (TextView) findViewById(R.id.releasedate);
+        trialersList = (ListView) findViewById(R.id.trialerslistview);
+        reviewsList = (ListView) findViewById(R.id.reviewslist);
+        favoriteButton = (Button) findViewById(R.id.favouritebutton);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
-        String moviename  = preferences.getString(movie.title,NOT_ADDED);
+        boolean isFavSelected = getIntent().getBooleanExtra(MOVIE_FAV_SELECTED, false);
+        setMovieDetails(isFavSelected);
+
+
+    }
+
+    public void setMovieDetails(boolean favselected) {
+        if (!favselected) {
+            final MoviesDb movie = (MoviesDb) Parcels.unwrap(getIntent().getParcelableExtra(MOVIE_KEY));
+            titleview.setText(movie.getTitle());
+            Picasso.with(getApplicationContext()).load(movie.getPosterPath()).into(movieImage);
+            movieOverview.setText(movie.getOverview());
+            voteAverage.setText(String.valueOf(movie.getVoteAverage() + "/10"));
+            releaseDate.setText(movie.getRealeseDate());
+
+
+            setTrailer(trialersList);
+            setReviews(reviewsList);
+
+
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    addToDataBase(movie);
+
+                }
+            });
+
+        } else {
+            //TODO : get movide form favorite movies
+        }
+
+
+    }
+
+    private void setTrailer(ListView gridView) {
+        ArrayList<String> words = new ArrayList<>(links.size());
+        for (int i = 0; i < links.size(); i++) {
+            words.add("Trailer " + String.valueOf(i + 1));
+        }
+
+        listAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, words);
+        gridView.setAdapter(listAdapter);
+        setListViewHeightBasedOnChildren(gridView);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String url = links.get(position).toString();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+
+            }
+        });
+
+    }
+
+    private void setReviews(ListView reviewslist) {
+
+        reviews.clear();
+        reviews = TheMovieDbClient.getReviewsarray();
+
+
+        reviewsAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1,
+                reviews);
+
+        reviewslist.setAdapter(reviewsAdapter);
+        setListViewHeightBasedOnChildren(reviewslist);
+    }
+
+    public void addToDataBase(MoviesDb movie) {
+
+
+        String moviename = preferences.getString(movie.title, NOT_ADDED);
         if (moviename.equals(NOT_ADDED))
 
         {
             SQLite.get().insert(FavMoviesTable.TABLE, movie);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(movie.title,ALREADY_ADDED);
+            editor.putString(movie.title, ALREADY_ADDED);
             editor.apply();
 
             Toast.makeText(getApplicationContext(), "Added To Favorite List", Toast.LENGTH_SHORT).show();
 
-        }
-        else if (moviename.equals(ALREADY_ADDED)){
+        } else if (moviename.equals(ALREADY_ADDED)) {
             Toast.makeText(getApplicationContext(), "Movie is already in Favorite List", Toast.LENGTH_SHORT).show();
         }
 

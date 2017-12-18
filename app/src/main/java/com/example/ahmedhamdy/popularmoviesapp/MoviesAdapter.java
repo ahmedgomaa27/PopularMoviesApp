@@ -19,20 +19,20 @@ public class MoviesAdapter extends ArrayAdapter<MoviesDb> {
 
 
     public MoviesAdapter(Context context, ArrayList<MoviesDb> moviesDb) {
-        super(context,0,moviesDb);
+        super(context, 0, moviesDb);
 
     }
 
 
     @Override
-    public View getView(int position,  View convertView,  ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
 
         MoviesDb movie = getItem(position);
 
-        if(convertView==null){
+        if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.movies_item,parent,false);
+            convertView = inflater.inflate(R.layout.movies_item, parent, false);
         }
         ImageView imageview = (ImageView) convertView.findViewById(R.id.ivPosterImage);
         Picasso.with(getContext()).setLoggingEnabled(true);

@@ -3,22 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ahmedhamdy.popularmoviesapp.MainActivity"
-    >
+    tools:context="com.example.ahmedhamdy.popularmoviesapp.MainActivity">
 
-   <GridView
-       android:background="@color/whiteoff"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:numColumns="auto_fit"
-       android:id="@+id/moviesgridview"
-       android:horizontalSpacing="0dp"
-       android:verticalSpacing="0dp"
-       android:stretchMode="columnWidth"
-       android:isScrollContainer="true"
-       >
+    <GridView
+        android:id="@+id/moviesgridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whiteoff"
+        android:horizontalSpacing="0dp"
+        android:isScrollContainer="true"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="0dp">
 
-   </GridView>
+    </GridView>
 
 
 </FrameLayout>
