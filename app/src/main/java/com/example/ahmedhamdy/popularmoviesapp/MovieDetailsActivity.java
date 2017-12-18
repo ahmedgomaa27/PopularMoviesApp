@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private static final String MOVIE_FAV_SELECTED = "favorite";
     private static final String NOT_ADDED = "not added";
     private static final String ALREADY_ADDED = "already added";
+    private static final String POSITION = "position";
     TextView titleview;
     ImageView movieImage;
     TextView movieOverview;
@@ -50,29 +52,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
     ArrayList<String> reviews = new ArrayList<>();
     Button favoriteButton;
     SharedPreferences preferences;
+    ScrollView mainScrollview;
+    int position;
 
-    /**** Method for Setting the Height of the ListView dynamically.
-     **** Hack to fix the issue of not showing all the items of the ListView
-     **** when placed inside a ScrollView  ****/
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
 
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        position = mainScrollview.getVerticalScrollbarPosition();
+        outState.putInt(POSITION,position);
     }
 
     @Override
@@ -88,18 +76,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
         trialersList = (ListView) findViewById(R.id.trialerslistview);
         reviewsList = (ListView) findViewById(R.id.reviewslist);
         favoriteButton = (Button) findViewById(R.id.favouritebutton);
+        mainScrollview = (ScrollView) findViewById(R.id.scrolldetails);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        setMovieDetails();
 
-        boolean isFavSelected = getIntent().getBooleanExtra(MOVIE_FAV_SELECTED, false);
-        setMovieDetails(isFavSelected);
+        if (savedInstanceState != null)
+        {
+            position = savedInstanceState.getInt(POSITION);
+            mainScrollview.setVerticalScrollbarPosition(position);
+        }
+     //   boolean isFavSelected = getIntent().getBooleanExtra(MOVIE_FAV_SELECTED, false);
+
 
 
     }
 
-    public void setMovieDetails(boolean favselected) {
-        if (!favselected) {
+    public void setMovieDetails() {
+
             final MoviesDb movie = (MoviesDb) Parcels.unwrap(getIntent().getParcelableExtra(MOVIE_KEY));
             titleview.setText(movie.getTitle());
             Picasso.with(getApplicationContext()).load(movie.getPosterPath()).into(movieImage);
@@ -121,9 +116,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 }
             });
 
-        } else {
-            //TODO : get movide form favorite movies
-        }
+
 
 
     }
@@ -162,7 +155,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 reviews);
 
         reviewslist.setAdapter(reviewsAdapter);
-        setListViewHeightBasedOnChildren(reviewslist);
+       // setListViewHeightBasedOnChildren(reviewslist);
     }
 
     public void addToDataBase(MoviesDb movie) {
@@ -192,6 +185,29 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 */
 
 
+    }
+    /**** Method for Setting the Height of the ListView dynamically.
+     **** Hack to fix the issue of not showing all the items of the ListView
+     **** when placed inside a ScrollView  ****/
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 
 

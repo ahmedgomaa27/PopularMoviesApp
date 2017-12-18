@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 if (index != 1) {
 
                     gridView.setSelection(index);
-                    Toast.makeText(getApplicationContext(),String.valueOf(index),Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),String.valueOf(index),Toast.LENGTH_SHORT).show();
                 }
             }
         });
