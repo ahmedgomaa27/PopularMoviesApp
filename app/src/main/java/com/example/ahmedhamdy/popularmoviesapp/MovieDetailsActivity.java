@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesProvider;
 import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesTable;
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +25,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 
 import ru.arturvasilov.sqlite.core.SQLite;
-import ru.arturvasilov.sqlite.core.SQLiteContentProvider;
 
 /**
  * Created by ahmed hamdy on 10/9/2017.
@@ -105,7 +103,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             final MoviesDb movie = (MoviesDb) Parcels.unwrap(getIntent().getParcelableExtra(MOVIE_KEY));
             titleview.setText(movie.getTitle());
             Picasso.with(getApplicationContext()).load(movie.getPosterPath()).into(movieImage);
-            movieOverview.setText(movie.getOverview());
+            movieOverview.setText(movie.getOverView());
             voteAverage.setText(String.valueOf(movie.getVoteAverage() + "/10"));
             releaseDate.setText(movie.getRealeseDate());
 

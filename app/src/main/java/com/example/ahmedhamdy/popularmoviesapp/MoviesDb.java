@@ -14,7 +14,7 @@ public class MoviesDb {
     public String title;
     public int voteAverage;
     public String posterPath;
-    public String overview;
+    public String overView;
     public String realeseDate;
     public int movieId;
     public MoviesDb() {
@@ -34,8 +34,8 @@ public class MoviesDb {
         return voteAverage;
     }
 
-    public String getOverview() {
-        return overview;
+    public String getOverView() {
+        return overView;
     }
 
     public String getPosterPath() {

@@ -109,7 +109,7 @@ public class TheMovieDbClient {
         MoviesDb b = new MoviesDb();
         try {
             b.title = jsonObject.getString("title");
-            b.overview = jsonObject.getString("overview");
+            b.overView = jsonObject.getString("overview");
             b.posterPath = POSTER_BASE_URL + jsonObject.getString("poster_path");
             b.realeseDate = jsonObject.getString("release_date");
             b.voteAverage = jsonObject.getInt("vote_average");
