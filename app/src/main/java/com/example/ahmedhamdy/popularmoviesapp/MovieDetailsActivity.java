@@ -1,7 +1,9 @@
 package com.example.ahmedhamdy.popularmoviesapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.UriMatcher;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,14 +20,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesTable;
+import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesProvider;
+import com.example.ahmedhamdy.popularmoviesapp.database.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
-import ru.arturvasilov.sqlite.core.SQLite;
 
 /**
  * Created by ahmed hamdy on 10/9/2017.
@@ -39,6 +41,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private static final String NOT_ADDED = "not added";
     private static final String ALREADY_ADDED = "already added";
     private static final String POSITION = "position";
+
+    private static final Uri movieUri = MovieContract.MovieEntry.CONTENT_URI;
+
     TextView titleview;
     ImageView movieImage;
     TextView movieOverview;
@@ -160,19 +165,41 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void addToDataBase(MoviesDb movie) {
 
+        /*
+        public String title;
+    public int voteAverage;
+    public String posterPath;
+    public String overView;
+    public String realeseDate;
+    public int movieId;
+         */
 
-        String moviename = preferences.getString(movie.title, NOT_ADDED);
-        if (moviename.equals(NOT_ADDED))
+        String movieName = preferences.getString(movie.title, NOT_ADDED);
+        if (movieName.equals(NOT_ADDED))
 
         {
-            SQLite.get().insert(FavMoviesTable.TABLE, movie);
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.MovieEntry.KEY_TITLE,movie.getTitle());
+            contentValues.put(MovieContract.MovieEntry.KEY_VOTE_AVERAGE,movie.getVoteAverage());
+            contentValues.put(MovieContract.MovieEntry.KEY_POSTER_PATH,movie.getPosterPath());
+            contentValues.put(MovieContract.MovieEntry.KEY_OVERVIEW,movie.getOverView());
+            contentValues.put(MovieContract.MovieEntry.KEY_RELEASE_DATE,movie.getRealeseDate());
+            contentValues.put(MovieContract.MovieEntry.KEY_MOVIE_ID,movie.getMovieId());
+
+
+          Uri temp = getContentResolver().insert(movieUri,contentValues);
+           Toast.makeText(getApplicationContext(),temp.toString(),Toast.LENGTH_LONG).show();
+
+
+
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(movie.title, ALREADY_ADDED);
             editor.apply();
 
             Toast.makeText(getApplicationContext(), "Added To Favorite List", Toast.LENGTH_SHORT).show();
 
-        } else if (moviename.equals(ALREADY_ADDED)) {
+        } else if (movieName.equals(ALREADY_ADDED)) {
             Toast.makeText(getApplicationContext(), "Movie is already in Favorite List", Toast.LENGTH_SHORT).show();
         }
 

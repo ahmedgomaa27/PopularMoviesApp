@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,11 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieDetailsActivity"></activity>
-
+        
         <provider
-            android:name=".database.FavMoviesProvider"
-            android:authorities="com.myapp"
-            android:exported="false"></provider>
+            android:authorities="com.example.ahmedhamdy.popularmoviesapp.moviedatabase"
+            android:name=".database.FavMoviesProvider"></provider>
     </application>
 
 

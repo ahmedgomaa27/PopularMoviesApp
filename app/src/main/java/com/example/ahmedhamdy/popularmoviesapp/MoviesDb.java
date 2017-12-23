@@ -10,7 +10,6 @@ import org.parceler.Parcel;
 
 public class MoviesDb {
 
-    public int id;
     public String title;
     public int voteAverage;
     public String posterPath;
@@ -21,9 +20,6 @@ public class MoviesDb {
 
     }
 
-    public int getId() {
-        return id;
-    }
 
 
     public String getTitle() {

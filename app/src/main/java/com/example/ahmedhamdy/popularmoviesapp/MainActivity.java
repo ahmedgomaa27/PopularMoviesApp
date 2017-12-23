@@ -19,13 +19,12 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.ahmedhamdy.popularmoviesapp.database.FavMoviesTable;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
-import ru.arturvasilov.sqlite.core.SQLite;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "movie";
@@ -152,8 +151,9 @@ public class MainActivity extends AppCompatActivity {
     public void startFavorites() {
 
 
+        // TODO: get all movies form content provider
         movies.clear();
-        movies.addAll(SQLite.get().query(FavMoviesTable.TABLE));
+       // movies.addAll(SQLite.get().query(FavMoviesTable.TABLE));
 
         moviesAdapter = new MoviesAdapter(this, movies);
         gridView.setAdapter(moviesAdapter);
