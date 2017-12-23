@@ -159,15 +159,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Done: get all movies form content provider
         movies.clear();
-        movies = getAllFavMovies();
+        getAllFavMovies(movies);
         moviesAdapter = new MoviesAdapter(this, movies);
         gridView.setAdapter(moviesAdapter);
         gridView.setSelection(index);
 
 
     }
-    public ArrayList getAllFavMovies(){
-        ArrayList<MoviesDb> arrayList = new ArrayList<>();
+    public void getAllFavMovies(ArrayList<MoviesDb> arrayList){
+
 
        Cursor cursor = getContentResolver().query(movieUri,null,null,null,null);
       try {
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
           if (cursor != null && !cursor.isClosed())
               cursor.close();
       }
-      return arrayList;
+
     }
 
 
