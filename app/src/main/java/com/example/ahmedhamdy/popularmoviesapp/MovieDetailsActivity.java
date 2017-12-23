@@ -188,8 +188,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
             contentValues.put(MovieContract.MovieEntry.KEY_MOVIE_ID,movie.getMovieId());
 
 
-          Uri temp = getContentResolver().insert(movieUri,contentValues);
-           Toast.makeText(getApplicationContext(),temp.toString(),Toast.LENGTH_LONG).show();
+         // Uri temp = getContentResolver().insert(movieUri,contentValues);
+          // Toast.makeText(getApplicationContext(),temp.toString(),Toast.LENGTH_LONG).show();
 
 
 

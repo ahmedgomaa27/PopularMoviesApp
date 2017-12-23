@@ -3,8 +3,10 @@ package com.example.ahmedhamdy.popularmoviesapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.example.ahmedhamdy.popularmoviesapp.database.MovieContract;
 
 import org.parceler.Parcels;
 
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "movie";
     private static final String CURRENT_SELECTION = "index";
     private static final String CURRENT_SORT = "sort";
+    private static final Uri movieUri = MovieContract.MovieEntry.CONTENT_URI;
+
     int index = 1;
     private GridView gridView;
     private MoviesAdapter moviesAdapter;
@@ -151,15 +156,47 @@ public class MainActivity extends AppCompatActivity {
     public void startFavorites() {
 
 
-        // TODO: get all movies form content provider
-        movies.clear();
-       // movies.addAll(SQLite.get().query(FavMoviesTable.TABLE));
 
+        // Done: get all movies form content provider
+        movies.clear();
+        movies = getAllFavMovies();
         moviesAdapter = new MoviesAdapter(this, movies);
         gridView.setAdapter(moviesAdapter);
         gridView.setSelection(index);
 
 
+    }
+    public ArrayList getAllFavMovies(){
+        ArrayList<MoviesDb> arrayList = new ArrayList<>();
+
+       Cursor cursor = getContentResolver().query(movieUri,null,null,null,null);
+      try {
+          if (cursor.moveToFirst())
+          {
+              do {
+                  MoviesDb movie  = new MoviesDb();
+                  movie.title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.KEY_TITLE));
+                  movie.voteAverage = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.KEY_VOTE_AVERAGE));
+                  movie.posterPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.KEY_POSTER_PATH));
+                  movie.overView = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.KEY_OVERVIEW));
+                  movie.realeseDate = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.KEY_RELEASE_DATE));
+                  movie.movieId =cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.KEY_MOVIE_ID));
+
+                  arrayList.add(movie);
+
+
+              }
+              while (cursor.moveToNext());
+          }
+      }
+      catch (Exception e){
+          Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+      }
+      finally {
+          if (cursor != null && !cursor.isClosed())
+              cursor.close();
+      }
+      return arrayList;
     }
 
 
